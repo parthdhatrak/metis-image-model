@@ -1,0 +1,52 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="animate-fade">
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem;">Analysis Report</h2>
+        <p style="color: var(--text-secondary);">Physiological diagnostic metrics and vision interpretability.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <!-- Left: Uploaded Image -->
+        <div class="premium-card" style="text-align: center;">
+            <h3 style="margin-top: 0; text-align: left; font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1rem;">Source Image</h3>
+            <img src="{{ image_url }}" alt="Uploaded" style="width: 100%; border-radius: 12px; height: 400px; object-fit: contain; background: #000;">
+        </div>
+
+        <!-- Right: Diagnostic Result -->
+        <div class="premium-card">
+            <h3 style="margin-top: 0; font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1rem;">Classification</h3>
+            
+            <div style="margin: 2rem 0; text-align: center;">
+                <div style="font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 0.5rem;">The child is classified as:</div>
+                <div style="font-size: 4rem; font-family: 'Outfit', sans-serif; font-weight: 900; 
+                    {% if class == 'Healthy' %} color: var(--healthy-color); 
+                    {% elif class == 'Moderate' %} color: var(--moderate-color); 
+                    {% else %} color: var(--severe-color); {% endif %}">
+                    {{ class }}
+                </div>
+                <div style="margin-top: 1rem; font-size: 1.2rem;">
+                    Confidence: <span style="font-weight: 600;">{{ confidence|floatformat:2 }}%</span>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem; margin-top: 2rem;">
+                <h4 style="margin-top: 0;">Feature Focus (Grad-CAM)</h4>
+                {% if cam_url %}
+                    <img src="{{ cam_url }}" alt="Heatmap" style="width: 100%; border-radius: 12px; margin-top: 1rem; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem;">
+                        <span style="color: #ef4444;">●</span> Red areas indicate where the model focused its attention (face, arms, or torso).
+                    </p>
+                {% else %}
+                    <p style="color: var(--text-secondary);">Heatmap generation failed.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 3rem; text-align: center;">
+        <a href="/" class="btn">Analyze Another Image</a>
+    </div>
+</div>
+{% endblock %}

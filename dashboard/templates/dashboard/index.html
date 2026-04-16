@@ -1,0 +1,63 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="animate-fade">
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h1 style="font-family: 'Outfit', sans-serif; font-size: 3.5rem; margin-bottom: 1rem;">Early Detection saves lives.</h1>
+        <p style="color: var(--text-secondary); font-size: 1.2rem; max-width: 600px; margin: 0 auto;">
+            Upload an image of a child to analyze physiological features related to malnutrition using state-of-the-art vision models.
+        </p>
+    </div>
+
+    <div class="premium-card" style="max-width: 600px; margin: 0 auto; text-align: center;">
+        <form action="/predict/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div id="drop-zone" style="border: 2px dashed rgba(255,255,255,0.1); border-radius: 16px; padding: 3rem; margin-bottom: 2rem; cursor: pointer; transition: all 0.3s ease;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
+                <p id="file-name" style="margin-bottom: 0;">Drag & drop or click to upload</p>
+                <input type="file" name="image" id="file-input" style="display: none;" accept="image/*" required>
+            </div>
+            
+            {% if error %}
+            <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid rgba(239, 68, 68, 0.2);">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn" style="width: 100%; font-size: 1.1rem; padding: 1.2rem;">Analyze Now</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const fileName = document.getElementById('file-name');
+
+    dropZone.onclick = () => fileInput.click();
+
+    fileInput.onchange = (e) => {
+        if (e.target.files.length > 0) {
+            fileName.innerText = e.target.files[0].name;
+            dropZone.style.borderColor = 'var(--accent-color)';
+            dropZone.style.background = 'rgba(79, 70, 229, 0.05)';
+        }
+    };
+
+    dropZone.ondragover = (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = 'var(--accent-color)';
+    };
+
+    dropZone.ondragleave = () => {
+        dropZone.style.borderColor = 'rgba(255,255,255,0.1)';
+    };
+
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+        fileName.innerText = e.dataTransfer.files[0].name;
+        dropZone.style.borderColor = 'var(--accent-color)';
+    };
+</script>
+{% endblock %}
