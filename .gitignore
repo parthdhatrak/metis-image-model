@@ -27,11 +27,6 @@ media/
 staticfiles/
 *.log
 
-# ML Models (Large files)
-*.h5
-*.tflite
-*.keras
-
 # Dataset
 dataset/
 training_curves.png
